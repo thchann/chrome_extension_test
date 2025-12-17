@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Extractor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Product Extractor</h1>
+    
+    <div id="status" class="status-message"></div>
+    
+    <button id="extractBtn" class="extract-button">Extract Product Info</button>
+    
+    <div id="results" class="results-container" style="display: none;">
+      <div class="results-header">
+        <h2>Extracted Data</h2>
+        <button id="copyBtn" class="copy-button">Copy JSON</button>
+      </div>
+      <pre id="jsonOutput" class="json-output"></pre>
+    </div>
+    
+    <div id="error" class="error-message" style="display: none;"></div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html>
+
