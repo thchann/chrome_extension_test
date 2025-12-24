@@ -27,7 +27,19 @@ document.addEventListener('DOMContentLoaded', function() {
       const response = await chrome.tabs.sendMessage(tab.id, { action: 'extractProduct' });
 
       if (!response || !response.success) {
-        throw new Error(response?.error || 'Failed to extract product information');
+        // Handle structured errors
+        if (response?.errorType === 'NOT_PRODUCT_PAGE') {
+          const errorData = response.errorData || {};
+          const domain = errorData.domain || 'this site';
+          throw new Error(`⚠️ This isn't a product page.\n\nYou're on a supported e-commerce site (${domain}), but this page doesn't appear to be a product detail page. Please navigate to a specific product page and try again.`);
+        } else if (response?.errorType === 'SITE_NOT_SUPPORTED') {
+          const errorData = response.errorData || {};
+          const domain = errorData.domain || 'this site';
+          const supportedSites = errorData.supportedSitesFormatted || 'No supported sites listed.';
+          throw new Error(`⚠️ Site not supported: ${domain}\n\nCurrently supported sites:\n${supportedSites}\n\nThis site has been added to the filter list.`);
+        } else {
+          throw new Error(response?.error || 'Failed to extract product information');
+        }
       }
 
       // Display results
@@ -39,7 +51,12 @@ document.addEventListener('DOMContentLoaded', function() {
       
     } catch (error) {
       console.error('Error:', error);
-      errorDiv.textContent = error.message || 'Failed to extract product information. Make sure you are on a supported e-commerce site.';
+      // Handle multi-line error messages
+      const errorMessage = error.message || 'Failed to extract product information. Make sure you are on a supported e-commerce site.';
+      errorDiv.innerHTML = errorMessage.split('\n').map(line => {
+        if (line.trim() === '') return '<br>';
+        return `<div>${line}</div>`;
+      }).join('');
       errorDiv.style.display = 'block';
       statusDiv.textContent = 'Extraction failed';
       statusDiv.className = 'status-message error';

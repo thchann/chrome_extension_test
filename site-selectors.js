@@ -31,14 +31,14 @@ const SITE_SELECTORS = {
     price: '.a-price .a-offscreen, #priceblock_ourprice, #priceblock_dealprice, .a-price-whole, span.a-price'
   },
   'ebay.com': {
-    name: 'h1[data-testid="x-item-title-label"], #x-item-title-label, h1.it-ttl, .x-item-title-label, h1.it-ttl',
-    image: '#icImg, img[itemprop="image"], .img.img500, #mainImgHldr img',
-    price: '.notranslate[itemprop="price"], #prcIsum, .u-flL.condText, .notranslate, .u-flL.condText .notranslate'
+    name: 'h1.x-item-title__mainTitle, h1.textual-display, h1[data-testid="x-item-title-label"], #x-item-title-label, h1.it-ttl, .x-item-title-label, h1.it-ttl',
+    image: 'img[src*="ebayimg.com"], #icImg, img[itemprop="image"], .img.img500, #mainImgHldr img, img.brw-product-card__image',
+    price: 'div.x-price-primary, div.x-bin-price__content, span.textual-display, .notranslate[itemprop="price"], #prcIsum, .u-flL.condText, .notranslate, .u-flL.condText .notranslate'
   },
   'ebay.co.uk': {
-    name: 'h1[data-testid="x-item-title-label"], #x-item-title-label, h1.it-ttl, .x-item-title-label, h1.it-ttl',
-    image: '#icImg, img[itemprop="image"], .img.img500, #mainImgHldr img',
-    price: '.notranslate[itemprop="price"], #prcIsum, .u-flL.condText, .notranslate, .u-flL.condText .notranslate'
+    name: 'h1.x-item-title__mainTitle, h1.textual-display, h1[data-testid="x-item-title-label"], #x-item-title-label, h1.it-ttl, .x-item-title-label, h1.it-ttl',
+    image: 'img[src*="ebayimg.com"], #icImg, img[itemprop="image"], .img.img500, #mainImgHldr img, img.brw-product-card__image',
+    price: 'div.x-price-primary, div.x-bin-price__content, span.textual-display, .notranslate[itemprop="price"], #prcIsum, .u-flL.condText, .notranslate, .u-flL.condText .notranslate'
   },
   'ebay.de': {
     name: 'h1[data-testid="x-item-title-label"], #x-item-title-label, h1.it-ttl, .x-item-title-label, h1.it-ttl',
@@ -110,15 +110,15 @@ const SITE_SELECTORS = {
   },
   // Walmart
   'walmart.com': {
-    name: '',
-    image: '',
-    price: ''
+    name: '#main-title',
+    image: 'img.db',
+    price: 'span'
   },
   // Target
   'target.com': {
-    name: '',
-    image: '',
-    price: ''
+    name: '#pdp-product-title-id',
+    price: 'div.styles_priceFullLineHeight__BgU9C',
+    image: 'img'
   },
   // Best Buy
   'bestbuy.com': {
@@ -128,9 +128,9 @@ const SITE_SELECTORS = {
   },
   // Etsy
   'etsy.com': {
-    name: '',
-    image: '',
-    price: ''
+    name: 'h1.wt-line-height-tight',
+    price: '.wt-text-title-larger.wt-mr-xs-1.wt-text-black .wt-screen-reader-only, .wt-screen-reader-only, div.n-listing-card__price',
+    image: 'img.wt-max-width-full'
   },
   // Wayfair
   'wayfair.com': {
@@ -156,13 +156,11 @@ const SITE_SELECTORS = {
     image: 'img._3eDhqCfZ',
     price: 'div._1vkz0rqG'
   },
-  // Shopify stores (heuristic will work for most)
-  // Note: Shopify is a platform, so individual stores will use heuristics
   // Abercrombie
   'abercrombie.com': {
-    name: '',
-    image: '',
-    price: ''
+    name: 'h1.product-title-component',
+    price: 'span.product-price-text, div.product-price-container',
+    image: 'img'
   },
   // Pacsun
   'pacsun.com': {
@@ -221,5 +219,36 @@ function getSelectorsForSite(url) {
   }
   
   return null;
+}
+
+/**
+ * Get list of all supported site domains
+ * @returns {Array<string>} - Array of supported domain names
+ */
+function getSupportedSitesList() {
+  return Object.keys(SITE_SELECTORS);
+}
+
+/**
+ * Check if a domain is in the supported sites list
+ * @param {string} domain - The domain to check
+ * @returns {boolean} - True if domain is supported
+ */
+function isSupportedSite(domain) {
+  // Check exact match
+  if (SITE_SELECTORS[domain]) {
+    return true;
+  }
+  
+  // Check parent domain match
+  const domainParts = domain.split('.');
+  if (domainParts.length > 2) {
+    const parentDomain = domainParts.slice(-2).join('.');
+    if (SITE_SELECTORS[parentDomain]) {
+      return true;
+    }
+  }
+  
+  return false;
 }
 

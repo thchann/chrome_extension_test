@@ -133,11 +133,22 @@ h1 {
   color: #c62828;
   border-radius: 4px;
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 1.6;
+  white-space: normal;
+}
+
+.error-message div {
+  margin-bottom: 4px;
+}
+
+.error-message div:last-child {
+  margin-bottom: 0;
 }
 
 .error-message::before {
   content: "⚠️ ";
   margin-right: 5px;
 }
+
+
 
